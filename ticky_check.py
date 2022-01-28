@@ -54,29 +54,23 @@ def Indexing_value(username,state,info,count): # This Function Add one everytime
         raise "FUckkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
 
 def Csv_conversion(Per_user, Error): # This Function makes two csv files required for the html conversion and organizes the dict
-
     def Inter_loop(Per_user):
+        global Ram_list
         Ram_list = []
         Per_user_list = []
-        for (info_name, info_num), (error_name, error_num) in Per_user['Info'] Per_user['Error'].items():
-            if isinstance(info_num or error_num, dict):
-                Inter_loop(info_num or error_num)
-            else:
+        for info_num in Per_user['Info'].values():
+            for user, error_num in Per_user['Error'].items():
+                if isinstance(info_num, dict):
+                    Inter_loop(info_num)
+                else:
+                    info_num = str(info_num)
+                    error_num = str(error_num)
+                    Ram_list.append("{}, {}, {}".format(user, info_num, error_num))
 
-                Per_user_list.append('{}, {}, {} \n'.format(info_name,info_num,error_num))
-                # Per_user_list += (name, values)
-                # if  len(Ram_list) == 0:
-                #     Ram_list.append(values)
-                #     Ram_list.append(name)
-                # elif len(Ram_list) == 2:
-                #     Ram_list.append(values)
-                # elif len(Ram_list) == 3:
-                #     print(Ram_list[0])
-                #     print(('{}, {}, {} \n'.format(Ram_list[0], Ram_list[1], Ram_list[2])))
-                    # Ram_list.clear()
-                # else:
-                #     raise "_____________Bug__________---"
-            return sorted(Per_user_list)
+            return sorted(Ram_list)
+        return Ram_list
+
+
 
 
     Headers = 'Username, INFO, ERROR'
@@ -84,11 +78,11 @@ def Csv_conversion(Per_user, Error): # This Function makes two csv files require
     User = open(File_names[0], 'w')
     User.write(Headers)
     User.write('\n')
-    sam = Inter_loop(Per_user)
-    # print(Per_user_list)
-    print(sam)
+    loop = Inter_loop(Per_user)
+    for sort in loop:
+        User.write(sort)
+        User.write("\n")
         # Sort = sorted(row)
-        # User.write(Sort)
 
 
 
