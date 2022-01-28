@@ -70,9 +70,6 @@ def Csv_conversion(Per_user, Error): # This Function makes two csv files require
             return sorted(Ram_list)
         return Ram_list
 
-
-
-
     Headers = 'Username, INFO, ERROR'
     File_names = ['user_statistics.csv', 'error_message.csv']
     User = open(File_names[0], 'w')
@@ -82,32 +79,8 @@ def Csv_conversion(Per_user, Error): # This Function makes two csv files require
     for sort in loop:
         User.write(sort)
         User.write("\n")
-        # Sort = sorted(row)
-
-
 
     User.close()
-
-        #print(list_username,list_len_info,list_len_error)
-        #for x in range(1):# goes through one item of the list
-        #    count = 0
-        #    Frame = []
-            #for row in list_len_error:# goes through whole list
-                #username, error_num = row
-                #error_str = str(error_num)
-                #info_str = str(list_len_info[len])
-                #username_str = str(username)
-                #if username_str < list_len_error[count]:
-                #Frame.append("{}, {}, {} \n".format(username.lower(),info_str,error_str))
-                #count += 1
-
-    #Sort_frame = (sorted(tuple(Frame)))
-    #for row in Sort_frame:
-    #    User.write(row)
-                #Sort_frame = sorted(Frame)
-                #print(Sort_frame)
-                #for x in Sort_frame:
-                #User.write(x)
 
     if Error:
         Headers = 'Error, Count'
