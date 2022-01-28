@@ -58,24 +58,25 @@ def Csv_conversion(Per_user, Error): # This Function makes two csv files require
     def Inter_loop(Per_user):
         Ram_list = []
         Per_user_list = []
-        for name, values in Per_user.items():
-            if isinstance(values, dict):
-                Inter_loop(values)
+        for (info_name, info_num), (error_name, error_num) in Per_user['Info'] Per_user['Error'].items():
+            if isinstance(info_num or error_num, dict):
+                Inter_loop(info_num or error_num)
             else:
-                Per_user_list += (name, values)
-                if  len(Ram_list) == 0:
-                    Ram_list.append(values)
-                    Ram_list.append(name)
-                elif len(Ram_list) == 2:
-                    Ram_list.append(values)
-                elif len(Ram_list) == 3:
-                    print(Ram_list[0])
-                    print(('{}, {}, {} \n'.format(Ram_list[0], Ram_list[1], Ram_list[2])))
-                    Per_user_list.append('{}, {}, {} \n'.format(Ram_list[0], Ram_list[1], Ram_list[2]))
-                    Ram_list.clear()
-                else:
-                    raise "_____________Bug__________---"
-            return print(Per_user_list)
+
+                Per_user_list.append('{}, {}, {} \n'.format(info_name,info_num,error_num))
+                # Per_user_list += (name, values)
+                # if  len(Ram_list) == 0:
+                #     Ram_list.append(values)
+                #     Ram_list.append(name)
+                # elif len(Ram_list) == 2:
+                #     Ram_list.append(values)
+                # elif len(Ram_list) == 3:
+                #     print(Ram_list[0])
+                #     print(('{}, {}, {} \n'.format(Ram_list[0], Ram_list[1], Ram_list[2])))
+                    # Ram_list.clear()
+                # else:
+                #     raise "_____________Bug__________---"
+            return sorted(Per_user_list)
 
 
     Headers = 'Username, INFO, ERROR'
