@@ -13,28 +13,14 @@ def State_count(Username, State, Info): # This Function finds the count or make 
         User_count = Per_user['Error'][Username] = 0
         Count = Error[Info] = 0
         return Count
-        if Per_user['Info'].get(Username) == None:
-            Per_user['Info'][Username] = 0
-            return Count
-        else:
-            return Count
 
     elif Username in Per_user['Info'] and State == 'INFO':
         Count = Per_user['Info'][Username]
-        if Per_user['Error'].get(Username) == None:
-            Per_user['Error'][Username] = 0
-            return Count
-        else:
-            return Count
-
+        return Count
 
     elif Username in Per_user['Error'] and State == 'ERROR':
         Count = Error.get(Info)
-        if Count == None:
-            Count = Error[Info] = 0
-            return Count
-        else:
-            return Count
+        return Count
 
     else:
         raise ('\t Problem: is found---------- All if and elif statements passed!')
