@@ -25,8 +25,6 @@ def State_count(Username, State, Info): # This Function finds the count or make 
             return Count
 
         elif State == 'ERROR':
-            User_count = Per_user['Error'][Username]
-            Per_user['Error'][Username] = User_count + 1
             Count = Error[Info] = 0
             return Count
 
@@ -55,32 +53,22 @@ def Indexing_value(username,state,info,count): # This Function Add one everytime
         # print(username,state,info,count)
 
 def Csv_conversion(Per_user, Error): # This Function makes two csv files required for the html conversion and organizes the dict
-    def Inter_loop(Per_user):
-        global Ram_list
-        Ram_list = []
-        User_count = 0
-        for info_num in Per_user['Info'].values():
-            for user, error_num in Per_user['Error'].items():
-                if isinstance(info_num, dict):
-                    Inter_loop(info_num)
-                else:
-                    info_num = str(info_num)
-                    error_num = str(error_num)
-                    list_info_keys = [user for user in Per_user['Info'].keys()]
-                    Ram_list.append("{}, {}, {}".format(user, info_num, error_num))
-            return sorted(Ram_list)
-        return Ram_list
-
-
-
-
     Headers = 'Username,INFO,ERROR'
     File_names = ['user_statistics.csv', 'error_message.csv']
     User = open(File_names[0], 'w')
     User.write(Headers)
     User.write('\n')
-    loop = Inter_loop(Per_user)
-    for sort in loop:
+    Ram_list = []
+    Counter = 0
+    while Counter < len(Per_user["Info"].keys()):
+        info_num =[str(num) for num in Per_user['Info'].values()]
+        error_num = [str(num) for num in Per_user['Error'].values()]
+        username = list(Per_user['Info'].keys())
+        Ram_list.append("{},{},{}".format(username[Counter], info_num[Counter], error_num[Counter]))
+        Counter += 1
+
+    Ram_list = sorted(Ram_list)
+    for sort in Ram_list:
         User.write(sort)
         User.write("\n")
 
@@ -93,7 +81,7 @@ def Csv_conversion(Per_user, Error): # This Function makes two csv files require
             Error_mesg.write(Headers)
             Error_mesg.write('\n')
             for key,error in Error.items():
-                row_string = '{}, {}'.format(key,error)
+                row_string = '{},{}'.format(key,error)
                 Error_mesg.write(row_string)
                 Error_mesg.write('\n')
 
