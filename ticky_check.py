@@ -5,22 +5,33 @@ import subprocess
 import csv
 
 def State_count(Username, State, Info): # This Function finds the count or make one if need
-    if Username not in Per_user['Info'] and State == 'INFO':
-        Count = Per_user['Info'][Username] = 0
-        return Count
+    if Username not in Per_user['Info'] and Username not in Per_user['Error']:
+        Per_user['Error'][Username] = 0
+        Per_user['Info'][Username] = 0
+        if State == 'INFO':
+            Count = Per_user['Info'][Username] = 0
+            return Count
 
-    elif Username not in Per_user['Error'] and State == 'ERROR':
-        User_count = Per_user['Error'][Username] = 0
-        Count = Error[Info] = 0
-        return Count
+        elif State == 'ERROR':
+            Count = Error[Info] = 0
+            return Count
 
-    elif Username in Per_user['Info'] and State == 'INFO':
-        Count = Per_user['Info'][Username]
-        return Count
+        else:
+            raise "The \'not\' is having a problem."
 
-    elif Username in Per_user['Error'] and State == 'ERROR':
-        Count = Error.get(Info)
-        return Count
+    elif Username in Per_user['Info'] and Username in Per_user['Error']:
+        if State == 'INFO':
+            Count = Per_user['Info'][Username]
+            return Count
+
+        elif State == 'ERROR':
+            User_count = Per_user['Error'][Username]
+            Per_user['Error'][Username] = User_count + 1
+            Count = Error[Info] = 0
+            return Count
+
+        else:
+            raise TypeError("Missing If condition!")
 
     else:
         raise ('\t Problem: is found---------- All if and elif statements passed!')
@@ -29,21 +40,25 @@ def Indexing_value(username,state,info,count): # This Function Add one everytime
     try:
         if state == 'INFO':
             Per_user['Info'][username] = count + 1
-            return
+
         elif state == 'ERROR':
             User_count = Per_user['Error'][username]
-            if User_count != None:
-                Per_user['Error'][username] = User_count + 1
-                Error[info] = count + 1
-            return
+            Per_user['Error'][username] = User_count + 1
+            Error[info] = count + 1
+
+        else:
+            raise "Something slip thourgh the IF condition"
+
+        return
     except:
-        raise "FUckkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+        raise "Slip at beginning of Indexing_value"
+        # print(username,state,info,count)
 
 def Csv_conversion(Per_user, Error): # This Function makes two csv files required for the html conversion and organizes the dict
     def Inter_loop(Per_user):
         global Ram_list
         Ram_list = []
-        Per_user_list = []
+        User_count = 0
         for info_num in Per_user['Info'].values():
             for user, error_num in Per_user['Error'].items():
                 if isinstance(info_num, dict):
@@ -51,12 +66,15 @@ def Csv_conversion(Per_user, Error): # This Function makes two csv files require
                 else:
                     info_num = str(info_num)
                     error_num = str(error_num)
+                    list_info_keys = [user for user in Per_user['Info'].keys()]
                     Ram_list.append("{}, {}, {}".format(user, info_num, error_num))
-
             return sorted(Ram_list)
         return Ram_list
 
-    Headers = 'Username, INFO, ERROR'
+
+
+
+    Headers = 'Username,INFO,ERROR'
     File_names = ['user_statistics.csv', 'error_message.csv']
     User = open(File_names[0], 'w')
     User.write(Headers)
@@ -69,7 +87,7 @@ def Csv_conversion(Per_user, Error): # This Function makes two csv files require
     User.close()
 
     if Error:
-        Headers = 'Error, Count'
+        Headers = 'Error,Count'
         Error = dict(sorted(Error.items(), key=lambda count: count[1], reverse=True))
         with open(File_names[1],'w') as Error_mesg:
             Error_mesg.write(Headers)
