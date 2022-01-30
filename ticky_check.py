@@ -25,7 +25,7 @@ def State_count(Username, State, Info): # This Function finds the count or make 
             return Count
 
         elif State == 'ERROR':
-            Count = Error[Info] = 0
+            Count = Error.get(Info,0)
             return Count
 
         else:
@@ -38,12 +38,12 @@ def Indexing_value(username,state,info,count): # This Function Add one everytime
     try:
         if state == 'INFO':
             Per_user['Info'][username] = count + 1
-
+            return
         elif state == 'ERROR':
             User_count = Per_user['Error'][username]
             Per_user['Error'][username] = User_count + 1
             Error[info] = count + 1
-
+            return 
         else:
             raise "Something slip thourgh the IF condition"
 
