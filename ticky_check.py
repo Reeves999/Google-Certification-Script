@@ -3,6 +3,7 @@ import re
 import sys
 import subprocess
 import csv
+from operator import itemgetter
 
 def State_count(Username, State, Info): # This Function finds the count or make one if need
     if Username not in Per_user['Info'] and Username not in Per_user['Error']:
@@ -13,8 +14,13 @@ def State_count(Username, State, Info): # This Function finds the count or make 
             return Count
 
         elif State == 'ERROR':
-            Count = Error[Info] = 0
-            return Count
+            if Info in Error.keys():
+                Count = Error.get(Info,0)
+                return Count
+
+            else:
+                Count = Error[Info] = 0
+                return Count
 
         else:
             raise "The \'not\' is having a problem."
@@ -43,14 +49,13 @@ def Indexing_value(username,state,info,count): # This Function Add one everytime
             User_count = Per_user['Error'][username]
             Per_user['Error'][username] = User_count + 1
             Error[info] = count + 1
-            return 
+            return
         else:
             raise "Something slip thourgh the IF condition"
 
         return
     except:
         raise "Slip at beginning of Indexing_value"
-        # print(username,state,info,count)
 
 def Csv_conversion(Per_user, Error): # This Function makes two csv files required for the html conversion and organizes the dict
     Headers = 'Username,INFO,ERROR'
@@ -76,16 +81,25 @@ def Csv_conversion(Per_user, Error): # This Function makes two csv files require
 
     if Error:
         Headers = 'Error,Count'
-        Error = dict(sorted(Error.items(), key=lambda count: count[1], reverse=True))
+        Error = dict(sorted(Error.items(), key = itemgetter(1), reverse=True))
         with open(File_names[1],'w') as Error_mesg:
             Error_mesg.write(Headers)
             Error_mesg.write('\n')
-            for key,error in Error.items():
-                row_string = '{},{}'.format(key,error)
-                Error_mesg.write(row_string)
-                Error_mesg.write('\n')
 
-    return 'Done'
+            Error_list = []
+            Counter = 0
+            while Counter < len(Error.keys()):
+
+                Error_num = [str(num) for num in Error.values()]
+                Info_name = list(Error.keys())
+                Error_list.append("{},{}".format(Info_name[Counter], Error_num[Counter]))
+                Counter += 1
+
+            for sort in Error_list:
+                Error_mesg.write(sort)
+                Error_mesg.write("\n")
+
+        return 'Done'
 
 def Finisher_script(): # This function finishes the script by tying all the functions to gather
     global Per_user, Error, Filelog
@@ -107,7 +121,6 @@ def Finisher_script(): # This function finishes the script by tying all the func
             except:
                 Error_pattern = re.compile(r"([INFO|ERROR]+) ([^\s].+) \(([A-Za-z\.]*)")
                 Full_pattern = Error_pattern.findall(log)
-                #print(Full_pattern)
                 if len(Full_pattern) == 0:
                     raise NoneType
                 else:
